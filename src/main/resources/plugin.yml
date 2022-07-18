@@ -1,0 +1,14 @@
+name: AppleUHC
+version: '${project.version}'
+main: me.jay.appleuhc.AppleUHC
+api-version: 1.18
+authors: [ Jay, Ben ]
+description: UHC For applemc
+commands:
+  auhc:
+    description: Allows an admin to use admin perms.
+    aliases: [adminuhc]
+  uhc:
+    description: Basic commands.
+    aliases: [Appleuhc]
+
