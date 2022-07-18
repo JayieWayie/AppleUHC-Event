@@ -1,10 +1,7 @@
 package me.jay.appleuhc.listeners;
 
 import me.jay.appleuhc.AppleUHC;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,6 +22,7 @@ public class onDeath implements Listener {
     }
 
 
+    ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
 
     @EventHandler
     public void onDeath(PlayerDeathEvent e){
@@ -33,6 +31,7 @@ public class onDeath implements Listener {
             plugin.getDead().put(e.getPlayer().getUniqueId(), "dead");
             Bukkit.broadcastMessage(ChatColor.GOLD + "[AppleUHC] " + ChatColor.YELLOW + e.getPlayer().getName() + " was elimated.");
             Bukkit.broadcastMessage(ChatColor.GOLD + "[AppleUHC] " + ChatColor.YELLOW + " " + plugin.getPlayersAlive() + " remain.");
+            Bukkit.dispatchCommand(console, "gmsp " + e.getPlayer().getName());
         }
 
         if (plugin.getAlive().size() == 1){
@@ -41,7 +40,7 @@ public class onDeath implements Listener {
                 String value = entry.getValue();
 
                 Player player = Bukkit.getPlayer(key);
-                ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+
 
                 Bukkit.broadcastMessage(ChatColor.GOLD + "[AppleUHC] " + ChatColor.YELLOW + " " + player.getName() + " was the last remaining!");
                 for (Player p : Bukkit.getOnlinePlayers()) {
@@ -61,7 +60,7 @@ public class onDeath implements Listener {
                     p.spawnParticle(Particle.VILLAGER_HAPPY, player.getLocation(), 5, 4, 1, 10);
                     p.sendTitle(Color("&6" + player.getName()), Color(" &e1st Place!"), 20, 20, 20);
                     p.playSound(player.getLocation(), Sound.ENTITY_CAT_AMBIENT, 10, 5);
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.dispatchCommand(console, "spawn " + p), 60*10);
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.dispatchCommand(console, "spawn " + p), 20*3);
                 }
 
             }

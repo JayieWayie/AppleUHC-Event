@@ -8,11 +8,16 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
 
 
 public class UHCommands implements CommandExecutor {
 
+    int x;
+    int z;
+    int taskID;
     private final AppleUHC plugin;
     public UHCommands(AppleUHC plugin){
         this.plugin = plugin;
@@ -108,13 +113,13 @@ public class UHCommands implements CommandExecutor {
 
     }
     private void border(ConsoleCommandSender console){
-        Bukkit.dispatchCommand(console, "wb set UHC 5000 5000 0 0");
+        Bukkit.dispatchCommand(console, "wb UHC set  5000 5000 0 0");
         Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eBorder will begin moving in 5minutes."));
         Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &cWARNING - &eBorder moves 1 block every 5 seconds."));
-        for (int i = 5000; i > 250; i--) {
-            int finalI = i;
-            Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> Bukkit.dispatchCommand(console, "wb set UHC " + finalI + " 0 0"), 20 * 300L, 20 * 5L);
-       }
+
+
+
+            Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> Bukkit.dispatchCommand(console, "wb UHC set " + x + " " + z + " 0 0"), 20 * 300L, 20 * 5L);
     }
     private void deathmatch(){
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eDeathmatch will start in 60 minutes.")), 60*20);
@@ -124,5 +129,27 @@ public class UHCommands implements CommandExecutor {
     }
 
     private String Color(String s){ s = ChatColor.translateAlternateColorCodes('&',s); return s; }
+
+    public void setX(int amount) {
+        x = 5000;
+    }
+
+    public void setZ(int amount){
+        z = 5000;
+    }
+
+    public void coordinates(){
+        BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+        taskID = scheduler.scheduleSyncRepeatingTask(plugin, () -> {
+
+            if (x == 250 || z == 250){
+                Bukkit.getScheduler().cancelTask(taskID);
+            }
+
+            x = x - 1;
+            z = z - 1;
+
+        }, 20*300L, 20L * 4);
+    }
 
 }
