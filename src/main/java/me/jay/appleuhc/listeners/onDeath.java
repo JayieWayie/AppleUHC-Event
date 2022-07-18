@@ -60,7 +60,7 @@ public class onDeath implements Listener {
                     p.spawnParticle(Particle.VILLAGER_HAPPY, player.getLocation(), 5, 4, 1, 10);
                     p.sendTitle(Color("&6" + player.getName()), Color(" &e1st Place!"), 20, 20, 20);
                     p.playSound(player.getLocation(), Sound.ENTITY_CAT_AMBIENT, 10, 5);
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.dispatchCommand(console, "spawn " + p), 20*3);
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.dispatchCommand(console, "spawn " + p.getName()), 20*3);
                 }
 
             }

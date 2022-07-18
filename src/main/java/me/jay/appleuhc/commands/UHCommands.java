@@ -15,8 +15,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class UHCommands implements CommandExecutor {
 
-    int x;
-    int z;
+    int x = 5000;
+    int z = 5000;
     int taskID;
     private final AppleUHC plugin;
     public UHCommands(AppleUHC plugin){
@@ -119,28 +119,12 @@ public class UHCommands implements CommandExecutor {
 
 
 
-            Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> Bukkit.dispatchCommand(console, "wb UHC set " + x + " " + z + " 0 0"), 20 * 300L, 20 * 5L);
-    }
-    private void deathmatch(){
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eDeathmatch will start in 60 minutes.")), 60*20);
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eDeathmatch will start in 10 minutes.")), 60*50*20);
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eDeathmatch will start in 5 minutes.")), 60*55*20);
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eDeathmatch will start in 1 minute.")), 60*59*20);
-    }
-
-    private String Color(String s){ s = ChatColor.translateAlternateColorCodes('&',s); return s; }
-
-    public void setX(int amount) {
-        x = 5000;
-    }
-
-    public void setZ(int amount){
-        z = 5000;
-    }
-
-    public void coordinates(){
         BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
         taskID = scheduler.scheduleSyncRepeatingTask(plugin, () -> {
+
+
+
+            Bukkit.dispatchCommand(console, "wb UHC set " + x + " " + z + " 0 0");
 
             if (x == 250 || z == 250){
                 Bukkit.getScheduler().cancelTask(taskID);
@@ -151,5 +135,16 @@ public class UHCommands implements CommandExecutor {
 
         }, 20*300L, 20L * 4);
     }
+    private void deathmatch(){
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eDeathmatch will start in 60 minutes.")), 60*20);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eDeathmatch will start in 10 minutes.")), 60*50*20);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eDeathmatch will start in 5 minutes.")), 60*55*20);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eDeathmatch will start in 1 minute.")), 60*59*20);
+    }
+
+    private String Color(String s){ s = ChatColor.translateAlternateColorCodes('&',s); return s; }
+
+
+
 
 }
