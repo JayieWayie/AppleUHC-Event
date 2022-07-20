@@ -13,6 +13,10 @@ import java.util.UUID;
 
 public final class AppleUHC extends JavaPlugin {
 
+    public int x = 5000;
+    public int z = 5000;
+
+    public String formattedTime;
     private static HashMap<UUID, Boolean> alerts = new HashMap<>();
     private static HashMap<UUID, String> alive = new HashMap<>();
     private static HashMap<UUID, String> dead = new HashMap<>();

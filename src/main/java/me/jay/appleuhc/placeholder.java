@@ -46,6 +46,10 @@ public class placeholder extends PlaceholderExpansion {
             return String.valueOf(plugin.getAlive().size());
         }else if (params.equalsIgnoreCase("pvpstatus")){
             return String.valueOf(plugin.getPvP());
+        }else if (params.equalsIgnoreCase("border")){
+            return plugin.x + " x " + plugin.z;
+        }else if (params.equalsIgnoreCase("timer")){
+            return plugin.formattedTime;
         }
 
         return null; // Placeholder is unknown by the Expansion

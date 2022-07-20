@@ -15,9 +15,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class UHCommands implements CommandExecutor {
 
-    int x = 5000;
-    int z = 5000;
     int taskID;
+
+    int time = 0;
+    int timerTask;
     private final AppleUHC plugin;
     public UHCommands(AppleUHC plugin){
         this.plugin = plugin;
@@ -113,7 +114,7 @@ public class UHCommands implements CommandExecutor {
 
     }
     private void border(ConsoleCommandSender console){
-        Bukkit.dispatchCommand(console, "wb UHC set  5000 5000 0 0");
+        Bukkit.dispatchCommand(console, "wb UHC set 5000 5000 0 0");
         Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eBorder will begin moving in 5minutes."));
         Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &cWARNING - &eBorder moves 1 block every 5 seconds."));
 
@@ -124,16 +125,37 @@ public class UHCommands implements CommandExecutor {
 
 
 
-            Bukkit.dispatchCommand(console, "wb UHC set " + x + " " + z + " 0 0");
+            Bukkit.dispatchCommand(console, "wb UHC set " + plugin.x + " " + plugin.z + " 0 0");
 
-            if (x == 250 || z == 250){
+            if (plugin.x == 250 || plugin.z == 250){
                 Bukkit.getScheduler().cancelTask(taskID);
             }
 
-            x = x - 1;
-            z = z - 1;
+            plugin.x = plugin.x - 1;
+            plugin.z = plugin.z - 1;
 
         }, 20*300L, 20L * 4);
+    }
+
+    private void timer(){
+
+        BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+        timerTask = scheduler.scheduleSyncRepeatingTask(plugin, () -> {
+
+            time = time + 1;
+
+        }, 0L, 1L);
+
+
+        int timer = time / 20;
+        int hours = timer / 3600; // get the amount of hours from the seconds
+        int remainder = timer % 3600; // get the rest in seconds
+        int minutes = remainder / 60; // get the amount of minutes from the rest
+        int seconds = remainder % 60; // get the new rest
+        String disHour = (hours < 10 ? "0" : "") + hours; // get hours and add "0" before if lower than 10
+        String disMinu = (minutes < 10 ? "0" : "") + minutes; // get minutes and add "0" before if lower than 10
+        String disSec = (seconds < 10 ? "0" : "") + seconds; // get seconds and add "0" before if lower than 10
+        plugin.formattedTime = disHour + ":" + disMinu + ":" + disSec; //get the whole time
     }
     private void deathmatch(){
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eDeathmatch will start in 60 minutes.")), 60*20);
