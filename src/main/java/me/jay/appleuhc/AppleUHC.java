@@ -3,9 +3,7 @@ package me.jay.appleuhc;
 import it.unimi.dsi.fastutil.Hash;
 import me.jay.appleuhc.commands.UHCommands;
 import me.jay.appleuhc.commands.xraytoggle;
-import me.jay.appleuhc.listeners.blockbreak;
-import me.jay.appleuhc.listeners.onDeath;
-import me.jay.appleuhc.listeners.pvpListener;
+import me.jay.appleuhc.listeners.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
@@ -56,6 +54,8 @@ public final class AppleUHC extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new blockbreak(this), this);
         getCommand("auhc").setExecutor(new xraytoggle(this));
         getCommand("uhc").setExecutor(new UHCommands(this));
+        getServer().getPluginManager().registerEvents(new logOut(this), this);
+        getServer().getPluginManager().registerEvents(new joinEvent(this), this);
         getServer().getPluginManager().registerEvents(new onDeath(this), this);
         getServer().getPluginManager().registerEvents(new pvpListener(this), this);
         new placeholder(this).register();
