@@ -16,7 +16,13 @@ public final class AppleUHC extends JavaPlugin {
     public int x = 5000;
     public int z = 5000;
 
-    public String formattedTime;
+    public int deathmatchx = 250;
+    public int deathmatchy = 250;
+    public boolean deathmatch = false;
+
+    public String formattedTime = "null";
+
+    public int time = 1;
     private static HashMap<UUID, Boolean> alerts = new HashMap<>();
     private static HashMap<UUID, String> alive = new HashMap<>();
     private static HashMap<UUID, String> dead = new HashMap<>();
@@ -24,7 +30,7 @@ public final class AppleUHC extends JavaPlugin {
     private String playersAlive = String.valueOf(getAlive().size());
 
     public boolean gamestatus = false;
-    private static boolean pvp = false;
+    public boolean pvp = false;
 
     public HashMap<UUID, Boolean> getAlerts() {
         return alerts;
@@ -34,9 +40,6 @@ public final class AppleUHC extends JavaPlugin {
         return playersAlive;
     }
 
-    public boolean getPvP(){
-        return pvp;
-    }
 
 
     public HashMap<UUID, String> getDead(){

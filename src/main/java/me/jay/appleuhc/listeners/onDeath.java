@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 import java.io.Console;
 import java.util.ArrayList;
@@ -31,7 +32,6 @@ public class onDeath implements Listener {
             plugin.getDead().put(e.getPlayer().getUniqueId(), "dead");
             Bukkit.broadcastMessage(ChatColor.GOLD + "[AppleUHC] " + ChatColor.YELLOW + e.getPlayer().getName() + " was elimated.");
             Bukkit.broadcastMessage(ChatColor.GOLD + "[AppleUHC] " + ChatColor.YELLOW + " " + plugin.getPlayersAlive() + " remain.");
-            Bukkit.dispatchCommand(console, "gmsp " + e.getPlayer().getName());
         }
 
         if (plugin.getAlive().size() == 1){
@@ -67,6 +67,14 @@ public class onDeath implements Listener {
         }
 
 
+    }
+
+    @EventHandler
+    public void onRespawn(PlayerRespawnEvent ev){
+        if (plugin.getDead().containsKey(ev.getPlayer().getUniqueId())){
+            ev.getPlayer().setGameMode(GameMode.SPECTATOR);
+            ev.getPlayer().sendMessage(Color("&8[&6AppleMC&8] &eRIP! You died :(."));
+        }
     }
 
     private String Color(String s){

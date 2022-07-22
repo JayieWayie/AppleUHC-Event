@@ -18,8 +18,9 @@ public class pvpListener implements Listener {
 
         if (e.getDamager() instanceof Player){
             if (e.getEntity() instanceof Player){
-                if (plugin.getPvP()) {
+                if (plugin.pvp == false) {
                     e.setCancelled(true);
+                    ((Player) e.getDamager()).getPlayer().sendMessage("You cannot pvp yet.");
                 }
             }
         }

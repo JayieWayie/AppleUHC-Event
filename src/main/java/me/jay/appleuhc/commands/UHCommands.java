@@ -3,6 +3,8 @@ package me.jay.appleuhc.commands;
 import me.jay.appleuhc.AppleUHC;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,8 +19,8 @@ public class UHCommands implements CommandExecutor {
 
     int taskID;
 
-    int time = 0;
     int timerTask;
+    int deathmatchTask;
     private final AppleUHC plugin;
     public UHCommands(AppleUHC plugin){
         this.plugin = plugin;
@@ -38,7 +40,9 @@ public class UHCommands implements CommandExecutor {
                         Start(player);
                         heals();
                         border(console);
-                        deathmatch();
+                        deathmatch(console);
+                        timer();
+                        enablePvp();
                     }else{
                         player.sendMessage(Color("&8[&6AppleUHC&8] &eYou do not have access to this command."));
                     }
@@ -108,7 +112,9 @@ public class UHCommands implements CommandExecutor {
     private void heals(){
         for (Player p : Bukkit.getOnlinePlayers()){
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> p.setHealth(20), 60*20*20);
+            Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eAll players were healed."));
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> p.setHealth(20), 60*40*20);
+            Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eAll players were healed."));
         }
 
 
@@ -116,7 +122,8 @@ public class UHCommands implements CommandExecutor {
     private void border(ConsoleCommandSender console){
         Bukkit.dispatchCommand(console, "wb UHC set 5000 5000 0 0");
         Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eBorder will begin moving in 5minutes."));
-        Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &cWARNING - &eBorder moves 1 block every 5 seconds."));
+        Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &cWARNING - &eBorder moves 5 block every 5 seconds."));
+        Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &cPVP Enabled in 15 minutes. Prepare to fight!"));
 
 
 
@@ -131,38 +138,69 @@ public class UHCommands implements CommandExecutor {
                 Bukkit.getScheduler().cancelTask(taskID);
             }
 
-            plugin.x = plugin.x - 1;
-            plugin.z = plugin.z - 1;
+            plugin.x = plugin.x - 5;
+            plugin.z = plugin.z - 5;
 
-        }, 20*300L, 20L * 4);
+        }, 20*300L, 20L * 5);
     }
 
     private void timer(){
 
+        BukkitScheduler scheduler2 = Bukkit.getServer().getScheduler();
+        timerTask = scheduler2.scheduleSyncRepeatingTask(plugin, () -> {
+
+            plugin.time = plugin.time + 1;
+
+
+            int timer = plugin.time;
+            int hours = timer / 3600, remainder = timer % 3600, minutes = remainder / 60, seconds = remainder % 60;
+            String disHour = (hours < 10 ? "0" : "") + hours, disMinu = (minutes < 10 ? "0" : "") + minutes, disSec = (seconds < 10 ? "0" : "") + seconds;
+            plugin.formattedTime = disHour + ":" + disMinu + ":" + disSec;
+
+        }, 1L, 20L);
+
+
+
+    }
+
+    private void enablePvp(){
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> plugin.pvp = true, 60*20*15);
+        Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &cWARNING: &ePvp Enabled."));
+    }
+
+    private void deathmatch(ConsoleCommandSender console) {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eDeathmatch will start in 60 minutes.")), 60 * 20);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eDeathmatch will start in 10 minutes.")), 60 * 50 * 20);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eDeathmatch will start in 5 minutes.")), 60 * 55 * 20);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eDeathmatch will start in 1 minute.")), 60 * 59 * 20);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.getScheduler().cancelTask(taskID), 60 * 60 * 20);
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (plugin.getAlive().containsKey(p.getUniqueId())){
+                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> p.teleport(new Location(p.getWorld(), 0, 64 , 0)), 60*20*60);
+            }
+        }
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> plugin.deathmatch = true, 60*20*60);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> deathmathborder(console), 60*20*60);
+    }
+
+    public void deathmathborder(ConsoleCommandSender console){
         BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-        timerTask = scheduler.scheduleSyncRepeatingTask(plugin, () -> {
-
-            time = time + 1;
-
-        }, 0L, 1L);
+        deathmatchTask = scheduler.scheduleSyncRepeatingTask(plugin, () -> {
 
 
-        int timer = time / 20;
-        int hours = timer / 3600; // get the amount of hours from the seconds
-        int remainder = timer % 3600; // get the rest in seconds
-        int minutes = remainder / 60; // get the amount of minutes from the rest
-        int seconds = remainder % 60; // get the new rest
-        String disHour = (hours < 10 ? "0" : "") + hours; // get hours and add "0" before if lower than 10
-        String disMinu = (minutes < 10 ? "0" : "") + minutes; // get minutes and add "0" before if lower than 10
-        String disSec = (seconds < 10 ? "0" : "") + seconds; // get seconds and add "0" before if lower than 10
-        plugin.formattedTime = disHour + ":" + disMinu + ":" + disSec; //get the whole time
+
+            Bukkit.dispatchCommand(console, "wb UHC set " + plugin.deathmatchx + " " + plugin.deathmatchy + " 0 0");
+
+            if (plugin.deathmatchx == 10 || plugin.deathmatchy == 10){
+                Bukkit.getScheduler().cancelTask(deathmatchTask);
+            }
+
+            plugin.deathmatchx = plugin.deathmatchx - 5;
+            plugin.deathmatchy = plugin.deathmatchy - 5;
+
+        }, 20*5, 20L * 5);
     }
-    private void deathmatch(){
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eDeathmatch will start in 60 minutes.")), 60*20);
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eDeathmatch will start in 10 minutes.")), 60*50*20);
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eDeathmatch will start in 5 minutes.")), 60*55*20);
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eDeathmatch will start in 1 minute.")), 60*59*20);
-    }
+
 
     private String Color(String s){ s = ChatColor.translateAlternateColorCodes('&',s); return s; }
 

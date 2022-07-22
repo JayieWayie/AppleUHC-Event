@@ -45,9 +45,13 @@ public class placeholder extends PlaceholderExpansion {
         }else if(params.equalsIgnoreCase("competitors")) {
             return String.valueOf(plugin.getAlive().size());
         }else if (params.equalsIgnoreCase("pvpstatus")){
-            return String.valueOf(plugin.getPvP());
+            return String.valueOf(plugin.pvp);
         }else if (params.equalsIgnoreCase("border")){
-            return plugin.x + " x " + plugin.z;
+            if (!plugin.deathmatch){
+                return plugin.x + " x " + plugin.deathmatchy;
+            }else{
+                return plugin.deathmatchy + " x " + plugin.deathmatchx;
+            }
         }else if (params.equalsIgnoreCase("timer")){
             return plugin.formattedTime;
         }
