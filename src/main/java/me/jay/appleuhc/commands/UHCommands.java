@@ -33,34 +33,36 @@ public class UHCommands implements CommandExecutor {
             Player player = (Player) sender;
             ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
             if (command.getName().equalsIgnoreCase("uhc")){
-                if (args[0].equalsIgnoreCase("join")){
-                    Join(player);
-                }else if (args[0].equalsIgnoreCase("start")){
-                    if (player.hasPermission("appleuhc.start")){
-                        Start(player);
-                        heals();
-                        border(console);
-                        deathmatch(console);
-                        timer();
-                        enablePvp();
-                    }else{
-                        player.sendMessage(Color("&8[&6AppleUHC&8] &eYou do not have access to this command."));
-                    }
-                }else if (args[0].equalsIgnoreCase("end")){
-                    end(player);
-                }else if (args[0].equalsIgnoreCase("revive")){
-                    if (player.hasPermission("appleuhc.revive")) {
-                        try {
-                            Player target = Bukkit.getPlayer(args[1]);
-                            Revive(target, player);
-                        } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
-                            player.sendMessage(Color("&8[&6AppleUHC&8] &eYou must provide an online player."));
+                try {
+                    if (args[0].equalsIgnoreCase("join")) {
+                        Join(player);
+                    } else if (args[0].equalsIgnoreCase("start")) {
+                        if (player.hasPermission("appleuhc.start")) {
+                            Start(player);
+                            heals();
+                            border(console);
+                            deathmatch(console);
+                            timer();
+                            enablePvp();
+                            boosters(player, console);
+                        } else {
+                            player.sendMessage(Color("&8[&6AppleUHC&8] &eYou do not have access to this command."));
                         }
-                    }else{
-                        player.sendMessage(Color("&8[&6AppleUHC&8] &eYou do not have access to this command."));
+                    }else if (args[0].equalsIgnoreCase("revive")) {
+                        if (player.hasPermission("appleuhc.revive")) {
+                            try {
+                                Player target = Bukkit.getPlayer(args[1]);
+                                Revive(target, player);
+                            } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
+                                player.sendMessage(Color("&8[&6AppleUHC&8] &eYou must provide an online player."));
+                            }
+                        } else {
+                            player.sendMessage(Color("&8[&6AppleUHC&8] &eYou do not have access to this command."));
+                        }
                     }
+                }catch (ArrayIndexOutOfBoundsException | NullPointerException e){
+                    player.sendMessage(Color("&8[&6AppleUHC&8] &eYou can do '/uhc join' to join."));
                 }
-
             }
         }
 
@@ -112,15 +114,15 @@ public class UHCommands implements CommandExecutor {
     private void heals(){
         for (Player p : Bukkit.getOnlinePlayers()){
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> p.setHealth(20), 60*20*20);
-            Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eAll players were healed."));
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> p.setHealth(20), 60*40*20);
-            Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eAll players were healed."));
         }
 
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eAll players were healed.")), 60*40*20);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eAll players were healed.")), 60*20*20);
 
     }
     private void border(ConsoleCommandSender console){
-        Bukkit.dispatchCommand(console, "wb UHC set 5000 5000 0 0");
+        Bukkit.dispatchCommand(console, "wb UHC set 2500 2500 0 0");
         Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eBorder will begin moving in 5minutes."));
         Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &cWARNING - &eBorder moves 5 block every 5 seconds."));
         Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &cPVP Enabled in 15 minutes. Prepare to fight!"));
@@ -163,9 +165,26 @@ public class UHCommands implements CommandExecutor {
 
     }
 
+    public void boosters(Player player, ConsoleCommandSender console){
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eAlive players will recieve care-packages at 15 minutes, 30 minutes, 45 minutes and 55 minutes.")), 5 * 60 * 3);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eKeep an eye on the Timer on the scoreboard to see when the next one is.")), 5 * 60 * 3);
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (plugin.getAlive().containsKey(p.getUniqueId())) {
+                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.dispatchCommand(console, "give " + p.getName() + " cooked_beef 10"), 60 * 15 * 20);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.dispatchCommand(console, "give " + p.getName() + " oak_wood 3"), 20 * 60 * 30);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.dispatchCommand(console, "give " + p.getName() + " golden_apple 1"), 60 * 12 * 45);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.dispatchCommand(console, "give " + p.getName() + " diamond 2"), 20 * 60 * 55);
+            }
+        }
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eAlive players recieved a care-package!")), 15 * 60 * 20);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eAlive players recieved a care-package!")), 30 * 60 * 20);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eAlive players recieved a care-package!")), 45 * 60 * 20);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &eAlive players recieved a care-package!")), 60 * 55 * 20);
+    }
+
     private void enablePvp(){
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> plugin.pvp = true, 60*20*15);
-        Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &cWARNING: &ePvp Enabled."));
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(Color("&8[&6AppleUHC&8] &ePVP is now Enabled.")), 60*20*15);
     }
 
     private void deathmatch(ConsoleCommandSender console) {
@@ -176,7 +195,7 @@ public class UHCommands implements CommandExecutor {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.getScheduler().cancelTask(taskID), 60 * 60 * 20);
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (plugin.getAlive().containsKey(p.getUniqueId())){
-                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> p.teleport(new Location(p.getWorld(), 0, 64 , 0)), 60*20*60);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> p.teleport(new Location(p.getWorld(), 15, 83 , 6)), 60*20*60);
             }
         }
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> plugin.deathmatch = true, 60*20*60);

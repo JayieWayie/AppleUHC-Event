@@ -31,7 +31,7 @@ public class onDeath implements Listener {
             plugin.getAlive().remove(e.getPlayer().getUniqueId());
             plugin.getDead().put(e.getPlayer().getUniqueId(), "dead");
             Bukkit.broadcastMessage(ChatColor.GOLD + "[AppleUHC] " + ChatColor.YELLOW + e.getPlayer().getName() + " was elimated.");
-            Bukkit.broadcastMessage(ChatColor.GOLD + "[AppleUHC] " + ChatColor.YELLOW + " " + plugin.getPlayersAlive() + " remain.");
+            Bukkit.broadcastMessage(ChatColor.GOLD + "[AppleUHC]" + ChatColor.YELLOW + " " + plugin.getAlive().size() + " remain.");
         }
 
         if (plugin.getAlive().size() == 1){
@@ -41,6 +41,7 @@ public class onDeath implements Listener {
 
                 Player player = Bukkit.getPlayer(key);
 
+                player.getInventory().clear();
 
                 Bukkit.broadcastMessage(ChatColor.GOLD + "[AppleUHC] " + ChatColor.YELLOW + " " + player.getName() + " was the last remaining!");
                 for (Player p : Bukkit.getOnlinePlayers()) {
@@ -72,8 +73,8 @@ public class onDeath implements Listener {
     @EventHandler
     public void onRespawn(PlayerRespawnEvent ev){
         if (plugin.getDead().containsKey(ev.getPlayer().getUniqueId())){
-            ev.getPlayer().setGameMode(GameMode.SPECTATOR);
-            ev.getPlayer().sendMessage(Color("&8[&6AppleMC&8] &eRIP! You died :(."));
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> ev.getPlayer().performCommand("rtp"), 20);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.dispatchCommand(console, "gmsp " + ev.getPlayer().getName()), 20*2);
         }
     }
 

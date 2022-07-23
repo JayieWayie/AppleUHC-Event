@@ -32,7 +32,7 @@ public class blockbreak implements Listener {
         if (e.getBlock().getType().equals(Material.DIAMOND_ORE)){
             for (Player p : Bukkit.getOnlinePlayers()){
                 if (p.hasPermission("AppleUHC.xray.alerts")){
-                    if (plugin.getAlerts().containsKey(p.getUniqueId())){
+                    if (plugin.getAlerts().containsKey(e.getPlayer().getUniqueId())){
                         TextComponent message = new TextComponent(Color("&8[&6AppleUHC&8] &e" + e.getPlayer() + " has mined +1 Diamonds."));
                         message.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tp " + e.getPlayer()));
                         message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to tp to user.").create()));

@@ -48,7 +48,7 @@ public class placeholder extends PlaceholderExpansion {
             return String.valueOf(plugin.pvp);
         }else if (params.equalsIgnoreCase("border")){
             if (!plugin.deathmatch){
-                return plugin.x + " x " + plugin.deathmatchy;
+                return plugin.x + " x " + plugin.z;
             }else{
                 return plugin.deathmatchy + " x " + plugin.deathmatchx;
             }

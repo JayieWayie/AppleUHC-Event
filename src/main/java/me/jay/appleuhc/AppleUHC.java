@@ -11,8 +11,8 @@ import java.util.UUID;
 
 public final class AppleUHC extends JavaPlugin {
 
-    public int x = 5000;
-    public int z = 5000;
+    public int x = 2500;
+    public int z = 2500;
 
     public int deathmatchx = 250;
     public int deathmatchy = 250;
@@ -25,8 +25,6 @@ public final class AppleUHC extends JavaPlugin {
     private static HashMap<UUID, String> alive = new HashMap<>();
     private static HashMap<UUID, String> dead = new HashMap<>();
 
-    private String playersAlive = String.valueOf(getAlive().size());
-
     public boolean gamestatus = false;
     public boolean pvp = false;
 
@@ -34,9 +32,6 @@ public final class AppleUHC extends JavaPlugin {
         return alerts;
     }
 
-    public String getPlayersAlive(){
-        return playersAlive;
-    }
 
 
 
@@ -58,6 +53,7 @@ public final class AppleUHC extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new joinEvent(this), this);
         getServer().getPluginManager().registerEvents(new onDeath(this), this);
         getServer().getPluginManager().registerEvents(new pvpListener(this), this);
+        getServer().getPluginManager().registerEvents(new onMessage(this), this);
         new placeholder(this).register();
     }
 
